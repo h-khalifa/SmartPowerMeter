@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="PowerMeterDemoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Measure">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MeasureName" Type="varchar" MaxLength="50" />
+          <Property Name="MeasureUnit" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Reading">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LKP_Id" Type="int" Nullable="false" />
+          <Property Name="ReadingTime" Type="datetime" />
+          <Property Name="ReadingVal" Type="varchar" MaxLength="150" />
+        </EntityType>
+        <EntityType Name="ReadingLKP">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MeaasureID" Type="int" Nullable="false" />
+          <Property Name="Symbol" Type="varchar" MaxLength="50" />
+          <Property Name="Threshold" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <Association Name="FK_Reading_ReadingLKP">
+          <End Role="ReadingLKP" Type="Self.ReadingLKP" Multiplicity="1" />
+          <End Role="Reading" Type="Self.Reading" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ReadingLKP">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Reading">
+              <PropertyRef Name="LKP_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReadingLKP_Measure">
+          <End Role="Measure" Type="Self.Measure" Multiplicity="1" />
+          <End Role="ReadingLKP" Type="Self.ReadingLKP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Measure">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReadingLKP">
+              <PropertyRef Name="MeaasureID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PowerMeterDemoModelStoreContainer">
+          <EntitySet Name="Measure" EntityType="Self.Measure" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Reading" EntityType="Self.Reading" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReadingLKP" EntityType="Self.ReadingLKP" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Reading_ReadingLKP" Association="Self.FK_Reading_ReadingLKP">
+            <End Role="ReadingLKP" EntitySet="ReadingLKP" />
+            <End Role="Reading" EntitySet="Reading" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReadingLKP_Measure" Association="Self.FK_ReadingLKP_Measure">
+            <End Role="Measure" EntitySet="Measure" />
+            <End Role="ReadingLKP" EntitySet="ReadingLKP" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PowerMeterDemoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Measure">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MeasureName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MeasureUnit" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ReadingLKPs" Relationship="Self.FK_ReadingLKP_Measure" FromRole="Measure" ToRole="ReadingLKP" />
+        </EntityType>
+        <EntityType Name="Reading">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LKP_Id" Type="Int32" Nullable="false" />
+          <Property Name="ReadingTime" Type="DateTime" Precision="3" />
+          <Property Name="ReadingVal" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ReadingLKP" Relationship="Self.FK_Reading_ReadingLKP" FromRole="Reading" ToRole="ReadingLKP" />
+        </EntityType>
+        <EntityType Name="ReadingLKP">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MeaasureID" Type="Int32" Nullable="false" />
+          <Property Name="Symbol" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Measure" Relationship="Self.FK_ReadingLKP_Measure" FromRole="ReadingLKP" ToRole="Measure" />
+          <NavigationProperty Name="Readings" Relationship="Self.FK_Reading_ReadingLKP" FromRole="ReadingLKP" ToRole="Reading" />
+          <Property Name="Threshold" Type="Decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <Association Name="FK_ReadingLKP_Measure">
+          <End Role="Measure" Type="Self.Measure" Multiplicity="1" />
+          <End Role="ReadingLKP" Type="Self.ReadingLKP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Measure">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReadingLKP">
+              <PropertyRef Name="MeaasureID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reading_ReadingLKP">
+          <End Role="ReadingLKP" Type="Self.ReadingLKP" Multiplicity="1" />
+          <End Role="Reading" Type="Self.Reading" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ReadingLKP">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Reading">
+              <PropertyRef Name="LKP_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PowerMeterDemoEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Measures" EntityType="Self.Measure" />
+          <EntitySet Name="Readings" EntityType="Self.Reading" />
+          <EntitySet Name="ReadingLKPs" EntityType="Self.ReadingLKP" />
+          <AssociationSet Name="FK_ReadingLKP_Measure" Association="Self.FK_ReadingLKP_Measure">
+            <End Role="Measure" EntitySet="Measures" />
+            <End Role="ReadingLKP" EntitySet="ReadingLKPs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reading_ReadingLKP" Association="Self.FK_Reading_ReadingLKP">
+            <End Role="ReadingLKP" EntitySet="ReadingLKPs" />
+            <End Role="Reading" EntitySet="Readings" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PowerMeterDemoModelStoreContainer" CdmEntityContainer="PowerMeterDemoEntities">
+          <EntitySetMapping Name="Measures">
+            <EntityTypeMapping TypeName="PowerMeterDemoModel.Measure">
+              <MappingFragment StoreEntitySet="Measure">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MeasureName" ColumnName="MeasureName" />
+                <ScalarProperty Name="MeasureUnit" ColumnName="MeasureUnit" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Readings">
+            <EntityTypeMapping TypeName="PowerMeterDemoModel.Reading">
+              <MappingFragment StoreEntitySet="Reading">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="LKP_Id" ColumnName="LKP_Id" />
+                <ScalarProperty Name="ReadingTime" ColumnName="ReadingTime" />
+                <ScalarProperty Name="ReadingVal" ColumnName="ReadingVal" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ReadingLKPs">
+            <EntityTypeMapping TypeName="PowerMeterDemoModel.ReadingLKP">
+              <MappingFragment StoreEntitySet="ReadingLKP">
+                <ScalarProperty Name="Threshold" ColumnName="Threshold" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MeaasureID" ColumnName="MeaasureID" />
+                <ScalarProperty Name="Symbol" ColumnName="Symbol" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

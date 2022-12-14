@@ -1,0 +1,242 @@
+﻿
+@{
+    ViewBag.Title = "Survey";
+    ViewBag.Active = "Survey";
+}
+
+<h2>Survey</h2>
+
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <td></td>
+                <td>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios1" value="0" checked="checked">
+                            phase 1
+                        </label>
+                    </div>
+                </td>
+                <td>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios2" value="1">
+                            phase 2
+                        </label>
+                    </div>
+                </td>
+                <td>
+
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios3" value="2">
+                            phase 3
+                        </label>
+                    </div>
+                </td>
+                <td>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios4" value="3">
+                            total
+                        </label>
+                    </div>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-measure-id="1">
+                <td class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" onclick="checkboxChanged(this, 1)"> Voltage
+                        </label>
+                    </div>
+                </td>
+                <td class="cell" data-order="0" id="1"></td>
+                <td class="cell" data-order="1" id="2"></td>
+                <td class="cell" data-order="2" id="3"></td>
+            </tr>
+            <tr data-measure-id="2">
+                <td class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" onclick="checkboxChanged(this, 2)"> Current
+                        </label>
+                    </div>
+                </td>
+                <td class="cell" data-order="0" id="4"></td>
+                <td class="cell" data-order="1" id="5"></td>
+                <td class="cell" data-order="2" id="6"></td>
+            </tr>
+            <tr data-measure-id="3">
+                <td class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" onclick="checkboxChanged(this, 3)"> Power
+                        </label>
+                    </div>
+                </td>
+                <td class="cell" data-order="0" id="7"></td>
+                <td class="cell" data-order="1" id="8"></td>
+                <td class="cell" data-order="2" id="9"></td>
+                <td class="cell" data-order="3" id="10"></td>
+            </tr>
+            <tr data-measure-id="4">
+                <td class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" onclick="checkboxChanged(this, 4)"> Energy
+                        </label>
+                    </div>
+                </td>
+                <td class="cell" data-order="0" id="11"></td>
+                <td class="cell" data-order="1" id="12"></td>
+                <td class="cell" data-order="2" id="13"></td>
+                <td class="cell" data-order="3" id="14"></td>
+            </tr>
+            <tr data-measure-id="5">
+                <td class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" onclick="checkboxChanged(this, 5)"> Power Factor
+                        </label>
+                    </div>
+                </td>
+                <td class="cell" data-order="0" id="15"></td>
+                <td class="cell" data-order="1" id="16"></td>
+                <td class="cell" data-order="2" id="17"></td>
+                <td class="cell" data-order="3" id="18"></td>
+            </tr>
+            <tr data-measure-id="6">
+                <td class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" onclick="checkboxChanged(this, 6)"> THD Voltage
+                        </label>
+                    </div>
+                </td>
+                <td class="cell" data-order="0" id="19"></td>
+                <td class="cell" data-order="1" id="20"></td>
+                <td class="cell" data-order="2" id="21"></td>
+            </tr>
+            <tr data-measure-id="7">
+                <td class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" onclick="checkboxChanged(this, 7)"> THD Current
+                        </label>
+                    </div>
+                </td>
+                <td class="cell" data-order="0" id="22"></td>
+                <td class="cell" data-order="1" id="23"></td>
+                <td class="cell" data-order="2" id="24"></td>
+            </tr>
+        </tbody>
+    </table>
+    <button class="btn btn-default btn-block" onclick="displayReadings()">Display</button>
+</div>
+<div style="width: 100%; overflow-x: auto; overflow-y: hidden; margin-top: 10px;">
+    <div style="width: 100%; height: 450px">
+        <canvas id="line-chart" height="450" width="0" style="background-color: whitesmoke;"></canvas>
+    </div>
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.0.1/chart.min.js" integrity="sha512-tQYZBKe34uzoeOjY9jr3MX7R/mo7n25vnqbnrkskGr4D6YOoPYSpyafUAzQVjV6xAozAqUFIEFsCO4z8mnVBXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.0.1/chart.umd.min.js" integrity="sha512-HyprZz2W40JOnIBIXDYHCFlkSscDdYaNe2FYl34g1DOmE9J+zEPoT4HHHZ2b3+milFBtiKVWb4sorDVVp+iuqA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.0.1/helpers.min.js" integrity="sha512-c0j5ITIxnG5CknVw3Tl4LrXCBV6Vevg3OFbTFWnuItsDokxEix501UjCggJC2McxWe2Arq4XYJdHd0VLKUc9aQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script>
+
+
+    function checkboxChanged(cb, id) {
+        var checked = cb.checked
+        var selectedReading = '<span class="glyphicon glyphicon-ok text-primary"></span>';
+
+        $('tr[data-measure-id=' + id + '] td.cell').html('');
+
+        if (checked) {
+            var order = $("input[name='optionsRadios']:checked").val();
+            $('tr[data-measure-id=' + id + '] td.cell[data-order=' + order + ']').html(selectedReading);
+        }
+
+    }
+
+    $('input[type=radio][name=optionsRadios]').change(function () {
+        console.log(this.value)
+        $('tr td.cell').html('');
+
+        $('input[type=checkbox]').prop('checked', false)
+
+
+
+    });
+
+    function displayReadings() {
+        var selectedReadings = $('tr td.cell').not(':empty').map(function () {
+            return $(this).attr("id");
+        }).get();
+        console.log(selectedReadings);
+        console.log(JSON.stringify(selectedReadings));
+        var data = JSON.stringify(selectedReadings);
+        $.ajax({
+            type: 'GET',
+            //data: JSON.stringify(selectedReadings),
+            url: '/PowerMeter/GetReadingsSurvey?Ids=' + data,
+            success: function (d) {
+                console.log(d);
+                var labels = d[0].Readings.map(item => item.ValueTime)
+                var data = new Array(d.map(function (readinglkp) { return readinglkp.Readings.map(item => item.Value) }))
+                var ttl = new Array(d.map(function (item) { return (item.Name + ' (' + item.Unit + ')') }))
+                renderCharts(labels, data, ttl);
+            },
+            error: function (p1, p2, p3) {
+                console.log(p1);
+                console.log(p2);
+                console.log(p3);
+            }
+        })
+
+    }
+
+
+
+    function renderCharts(lbls, datas, titles) {
+        try {
+            charted.destroy();
+        }
+        catch (error) {
+
+        }
+        var tempObj = datas[0].map(function (item, index) {
+            return {
+                label: titles[0][index],
+                data: datas[0][index],
+                fill: false,
+                tension: 0.1
+            }
+        })
+        charted = new Chart(document.getElementById("line-chart"), {
+            type: "line",
+            data: {
+                labels: lbls,
+                datasets: tempObj
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: "Those Measurements are introduced by smart power meter!"
+                },
+            }
+        });
+
+    }
+
+
+
+</script>

@@ -1,0 +1,111 @@
+﻿@model List<PowerReadingsDemo.Models.ViewModels.PowerMeterController.ConfigAction.ReadingLKPViewModel>
+@{
+    ViewBag.Title = "Threshold";
+    ViewBag.Active = "Config";
+}
+
+<h2>Config</h2>
+
+<form class="form-horizontal">
+    <fieldset>
+        <legend>Reading Threshold</legend>
+
+        <div class="form-group">
+            <label for="Readings" class="col-lg-2 control-label">Readings</label>
+            <div class="col-lg-10">
+                <select class="form-control" id="Readings" onchange="selectReadingChanged()">
+                    @foreach (var item in Model)
+                    {
+                        <option value="@item.Id">@item.Symbol</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputVal" class="col-lg-2 control-label">Value</label>
+            <div class="col-lg-10">
+                <input type="number" min="0" class="form-control" id="inputVal" placeholder="Threshold Value">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+                @*<button type="submit" class="btn btn-primary">Update</button>*@
+                <input type="button" class="btn btn-primary" onclick="saveThreshold()" value="Save" />
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+<script src="~/Scripts/SweetAlert2/sweetalert2.min.js"></script>
+<link href="~/Content/SweetAlert2/sweetalert2.min.css" rel="stylesheet" />
+
+<script>
+    
+    $(document).ready(function () {
+        $('#Readings').prop("selectedIndex", -1);
+    });
+
+    function selectReadingChanged() {
+        Swal.fire({
+            title: 'Loading...',
+            html: 'Please wait...',
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        });
+
+        var RID = $('#Readings').val();
+
+        $.ajax({
+            type: 'GET',
+            url: '/PowerMeter/GetReadingThreshold?RID=' + RID,
+            success: function (d) {
+                console.log(d)
+                Swal.close();
+                if (d == -1) {
+                    $('#inputVal').val('');
+                }
+                else {
+                    $('#inputVal').val(d);
+                }
+                
+
+            },
+            error: function (p1, p2, p3) {
+                Swal.fire({
+                    icon: 'error',
+                    title: p1.status,
+                    text: p3,
+                })
+            }
+        })
+
+
+    }
+
+    function saveThreshold() {
+        var RID = $('#Readings').val();
+        var threshold = $('#inputVal').val();
+        console.log(RID);
+        console.log(threshold);
+
+        $.ajax({
+            type: 'POST',
+            url: '/PowerMeter/SaveReadingThreshold?RID=' + RID + '&thrshld=' + threshold,
+            success: function () {
+                Swal.fire({ icon: 'success', title: 'Updaed Successfully' })
+            },
+            error: function (p1, p2, p3) {
+                Swal.fire({
+                    icon: 'error',
+                    title: p1.status,
+                    text: p3,
+                })
+            }
+        })
+
+    }
+</script>
